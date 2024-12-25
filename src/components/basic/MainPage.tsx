@@ -4,6 +4,8 @@ import AddProductForm from './AddProductForm';
 import ProductTable from './TableOfProducts';
 import { Tabs, Tab, Card, CardBody, Button } from "@nextui-org/react";
 import Cart from './Purchase';
+import AllProductTable from './AllProdsTable';
+import Transactions from './Transaction';
 
 const MainPage = () => {
     const [activeTab, setActiveTab] = useState(0);
@@ -12,7 +14,7 @@ const MainPage = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await fetch('/api/product');
+            const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/product');
             if (response.ok) {
                 const data = await response.json();
                 setProducts(data);
@@ -46,7 +48,8 @@ const MainPage = () => {
                                             Add Product
                                         </button>
                                         <div className='w-full'>
-                                            <ProductTable products={products} />
+                                            {/* <ProductTable products={products} /> */}
+                                            <AllProductTable />
                                         </div>
                                     </CardBody>
                                 </Card>
@@ -60,11 +63,10 @@ const MainPage = () => {
                                     </CardBody>
                                 </Card>
                             </Tab>
-                            <Tab key="videos" title="Videos">
+                            <Tab key="transactions" title="Transactions">
                                 <Card>
                                     <CardBody>
-                                        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-                                        mollit anim id est laborum.
+                                        <Transactions />
                                     </CardBody>
                                 </Card>
                             </Tab>

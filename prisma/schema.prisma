@@ -1,6 +1,6 @@
 datasource db {
   provider = "mongodb"
-  url      = env("DATABASE_URL")
+  url      = env("MONGODB_URI")
 }
 
 generator client {
@@ -21,9 +21,10 @@ model Product {
 
 model transaction{
   id  String @id @default(auto()) @map("_id") @db.ObjectId
-  date String
-  abs_amount Float
+  sub_total Float
+  discount Float
   discounted_price Float
-  abs_profit Float
+  total_after_discount Float
+  profit Float
   created_at          DateTime @default(now()) @map("created_at")
 }
