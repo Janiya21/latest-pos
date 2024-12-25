@@ -7,9 +7,7 @@ export default async function AuthButton() {
  const session = await auth();
  if(session && session.user){
     session.user = {
-        _id : session.user._id,
         name : session.user.name,
-        email : session.user.email,
         id: session.user.id
     }
  }

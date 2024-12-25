@@ -1,12 +1,10 @@
 'use client';
 import { useState } from 'react';
-import { useToast } from "@/components/ui/use-toast";
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import '../../../public/styles/page-loader.css';
 
 export default function AddProductForm() {
-  const { toast } = useToast();
 
   const [formData, setFormData] = useState({
     name: '',
