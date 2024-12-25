@@ -15,7 +15,7 @@ export default function AuthButtonClient() {
     const [showError, setShowError] = useState(true);
 
     useEffect(() => {
-        sessionStorage.setItem("user", session.data?.user?._id ?? "null")
+        sessionStorage.setItem("user", session.data?.user?.name ?? "null")
         console.log(session);
         if (session.status != "authenticated") {
             console.log('not authenticated');
@@ -29,9 +29,8 @@ export default function AuthButtonClient() {
         <Tooltip
             content={
                 <div className="px-1 py-2">
-                    <div className="text-tiny">Id : {session.data?.user?._id}</div>
+                    
                     <div className="text-tiny">User : {session.data?.user?.name}</div>
-                    <div className="text-tiny">Email : {session.data?.user?.email}</div>
                     {/* <div className="text-tiny">Email : {session.data?.user?.id}</div> */}
                 </div>
             }
