@@ -48,7 +48,7 @@ export async function POST(req:NextRequest) {
 
 
 export async function GET(req:NextRequest) {
-  const { searchParams } = new URL(req.url);
+  const { searchParams } = new URL(req.nextUrl);
   try {
     // Extract query parameters for pagination
 
