@@ -20,7 +20,7 @@ export default function NavBarUI() {
             <Avatar className="p-3" src="https://www.transparentpng.com/download/user/gray-user-profile-icon-png-fP8Q1P.png" />
         </div>
         <NavbarItem className="mt-4 md:mt-0">
-            <AuthButton />
+            {/* <AuthButton /> */}
         </NavbarItem>
       </NavbarContent>
     </Navbar>

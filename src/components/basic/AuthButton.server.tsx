@@ -10,7 +10,7 @@ export default async function AuthButton() {
         name : session.user.name,
         id: session.user.id
     }
- }
+ }  
  return (
   <SessionProvider basePath={BASE_PATH} session={session}>
     <AuthButtonClient />
