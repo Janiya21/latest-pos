@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 
 interface ProductProps {
   closeModal: () => void;
-  fetchData: () => void;
+  fetchData: (currentPage: any, search: string) => Promise<void>;
 }
 
 const AddProductForm: React.FC<ProductProps> = ({fetchData, closeModal}) => {
@@ -86,7 +86,7 @@ const AddProductForm: React.FC<ProductProps> = ({fetchData, closeModal}) => {
     } finally {
       NProgress.done();
       closeModal();
-      fetchData();
+      fetchData(1,'');
     }
   };
 

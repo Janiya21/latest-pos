@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function PUT(req: NextRequest, params: { id: string }): Promise<Response> {
+export async function PUT(req, { params }) {
   try {
     const productId = params.id;
     const productData = await req.json();
@@ -37,7 +37,8 @@ export async function PUT(req: NextRequest, params: { id: string }): Promise<Res
         purchase_quantity: productData.purchase_quantity,
         unit_purchase_price: productData.unit_purchase_price,
         unit_sell_price: productData.unit_sell_price,
-        remaining_quantity: productData.remaining_quantity
+        remaining_quantity: productData.remaining_quantity,
+        sold_quantity: productData.sold_quantity,
       },
     });
 

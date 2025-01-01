@@ -1,6 +1,9 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
+import '../../../public/styles/page-loader.css';
 
 type Product = {
     id: string;
@@ -22,6 +25,7 @@ const AllProductTable = () => {
     const [loading, setLoading] = useState(false);
 
     const fetchProducts = async (page: number, search = '') => {
+        NProgress.start();
         setLoading(true);
         try {
             const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL + `/api/prods-by-page?page=${page}&search=${search}`);
@@ -36,6 +40,7 @@ const AllProductTable = () => {
             console.error('Failed to fetch products:', error);
         } finally {
             setLoading(false);
+            NProgress.done();
         }
     };
 
@@ -52,6 +57,7 @@ const AllProductTable = () => {
     const handleSave = async (index: number) => {
         const updatedProduct = products[index];
         try {
+             NProgress.start();
             const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL + `/api/product/${updatedProduct.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -61,12 +67,14 @@ const AllProductTable = () => {
                 throw new Error('Failed to update product');
             }
             toast({
-                description: 'Product added Successful!',
+                description: 'Product Updated Successful!',
                 variant: 'default',
               });
             fetchProducts(currentPage, searchTerm);
         } catch (error) {
             console.error('Error updating product:', error);
+        }finally{
+            NProgress.done();
         }
     };
 
