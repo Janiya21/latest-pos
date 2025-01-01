@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
-export async function POST(req:Request) {
+export async function POST(req:NextRequest) {
   try {
     const body = await req.json();
 
@@ -47,7 +47,7 @@ export async function POST(req:Request) {
 }
 
 
-export async function GET(req:Request) {
+export async function GET(req:NextRequest) {
   const { searchParams } = new URL(req.url);
   try {
     // Extract query parameters for pagination
