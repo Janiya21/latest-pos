@@ -3,9 +3,10 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function GET(req) {
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
   try {
-    const { searchParams } = new URL(req.url);
+
     const page = parseInt(searchParams.get('page') || '1', 10);
     const search = searchParams.get('search') || '';
     const pageSize = 10; // Number of items per page

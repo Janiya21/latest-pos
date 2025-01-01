@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/find-product/route.js", "src/app/api/prods-by-page/route.js", "src/app/api/transaction/route.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/find-product/route.ts", "src/app/api/prods-by-page/route.ts", "src/app/api/transaction/route.ts"],
   "exclude": ["node_modules"]
 }
