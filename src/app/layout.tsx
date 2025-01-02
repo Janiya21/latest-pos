@@ -14,7 +14,7 @@ const notoSerif = Noto_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "DineSphere Admin",
+  title: "NBM Admin",
   description: "Powered by EWB IT",
 };
 
