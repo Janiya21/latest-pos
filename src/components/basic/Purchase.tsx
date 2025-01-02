@@ -1,6 +1,8 @@
 "use client";
-import React, { useState, useEffect } from "react";
 import { useToast } from '@/hooks/use-toast';
+import React, { useEffect, useState, useRef } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 interface Product {
   id: string;
@@ -28,6 +30,7 @@ interface CartSummary {
 
 
 const Cart: React.FC<{}> = ({ }) => {
+  const modalRef = useRef<HTMLDivElement | null>(null); 
   const [cart, setCart] = useState<CartItem[]>([]);
   const [discount, setDiscount] = useState<number>(0); // Discount in percentage
   const [total, setTotal] = useState<number>(0);
@@ -36,7 +39,7 @@ const Cart: React.FC<{}> = ({ }) => {
   const [productsForTerm, setProductForTerm] = useState<Product[]>([]);
   const [modelActive, setModelActive] = useState(false);
   const [alertData, setAlertData] = useState<CartSummary>();
-   const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -91,7 +94,7 @@ const Cart: React.FC<{}> = ({ }) => {
       setProductForTerm(data);
     } catch (error) {
       console.error("Error fetching products:", error);
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -206,6 +209,20 @@ const Cart: React.FC<{}> = ({ }) => {
     setModelActive(false);
   };
 
+  const handlePrint = async () => {
+    if (modalRef.current) {
+      const canvas = await html2canvas(modalRef.current);
+      const imgData = canvas.toDataURL("image/png");
+
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save("checkout-summary.pdf");
+    }
+  };
+
 
   return (
     <div className="container mx-auto p-6">
@@ -318,7 +335,10 @@ const Cart: React.FC<{}> = ({ }) => {
       {modelActive && (
         <div>
           <div className="fixed z-50 inset-0 bg-black bg-opacity-50 flex items-center justify-center px-4 py-6">
-            <div className="bg-white w-full max-w-md rounded-lg shadow-lg p-4 relative">
+            <div
+              ref={modalRef}
+              className="bg-white w-full max-w-md rounded-lg shadow-lg p-4 relative"
+            >
               {/* Close Button */}
               <button
                 onClick={() => setModelActive(false)}
@@ -328,7 +348,9 @@ const Cart: React.FC<{}> = ({ }) => {
                 &times;
               </button>
               <div className="mt-8 mb-3">
-                <h4 className="text-md font-semibold mb-4">Are you sure you want to checkout this items ?</h4>
+                <h4 className="text-md font-semibold mb-4">
+                  Are you sure you want to checkout these items?
+                </h4>
               </div>
 
               {cart.map((item) => (
@@ -346,9 +368,7 @@ const Cart: React.FC<{}> = ({ }) => {
               ))}
 
               <div className="mt-4">
-                <label className="block mb-2 text-sm">
-                  Discount: {discount}%
-                </label>
+                <label className="block mb-2 text-sm">Discount: {discount}%</label>
                 <label className="block mb-2  text-sm">
                   Subtotal: Rs. {cart.reduce((sum, item) => sum + item.totalPrice, 0).toFixed(2)}/=
                 </label>
@@ -366,9 +386,17 @@ const Cart: React.FC<{}> = ({ }) => {
               >
                 Confirm
               </button>
+
+              <button
+                onClick={handlePrint}
+                className="bg-gray-500 text-white text-md px-4 py-2 rounded-md w-full mt-2 hover:bg-gray-700"
+              >
+                Download PDF
+              </button>
             </div>
           </div>
-        </div>)}
+        </div>
+      )}
     </div>
   );
 };
