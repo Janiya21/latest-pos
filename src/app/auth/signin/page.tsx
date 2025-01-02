@@ -37,9 +37,9 @@ const SignIn = () => {
                     <img width="200" className="mx-auto" src="https://kit8.net/wp-content/uploads/edd/2022/04/password_preview.jpg" alt="Logo" />
                     <h2 className='mt-4 text-gray-900 font-extrabold'>WELCOME TO NBM</h2>
                 </div>
-                    <input  onChange={(e) => setUsername(e.target.value)} className="p-3 border-[1px] border-slate-500 rounded-sm w-80" placeholder="E-Mail or Phone number" />
+                    <input onChange={(e) => setUsername(e.target.value)} className="p-3 border-[1px] border-slate-500 rounded-sm w-80" placeholder="E-Mail or Phone number" />
                     <div className="flex flex-col space-y-1">
-                        <input  onChange={(e) => setPassword(e.target.value)} className="p-3 border-[1px] border-slate-500 rounded-sm w-80" placeholder="Password" />
+                        <input type='password'   onChange={(e) => setPassword(e.target.value)} className="p-3 border-[1px] border-slate-500 rounded-sm w-80" placeholder="Password" />
                         <p className="font-bold text-gray-800] py-2">Forgot password?</p>
                     </div>
                     {error && <p style={{ color: 'red' }}>{error}</p>}
