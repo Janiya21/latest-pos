@@ -19,9 +19,9 @@ export default function NavBarUI() {
           <div className="md:flex gap-3 items-center hidden">
             <Avatar
               className="p-3"
-              src={"https://www.transparentpng.com/download/user/gray-user-profile-icon-png-fP8Q1P.png"}
+              src={"https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png"}
             />
-            <span className="font-semibold">{session.user?.name || "User"}</span>
+            {/* <span className="font-semibold">{session.user?.name || "User"}</span> */}
             <Button onClick={() => signOut()} color="danger" size="sm">
               Logout
             </Button>
