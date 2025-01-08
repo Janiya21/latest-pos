@@ -11,6 +11,7 @@ interface Product {
   unit_sell_price: number;
   unit_purchase_price: number;
   remaining_quantity: number;
+  quantityToAdd?: any;
 }
 
 interface CartItem extends Product {
@@ -30,7 +31,7 @@ interface CartSummary {
 
 
 const Cart: React.FC<{}> = ({ }) => {
-  const modalRef = useRef<HTMLDivElement | null>(null); 
+  const modalRef = useRef<HTMLDivElement | null>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [discount, setDiscount] = useState<number>(0); // Discount in percentage
   const [total, setTotal] = useState<number>(0);
@@ -41,6 +42,7 @@ const Cart: React.FC<{}> = ({ }) => {
   const [alertData, setAlertData] = useState<CartSummary>();
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const [quantities, setQuantities] = useState<{ [id: string]: number }>({});
 
   useEffect(() => {
     calculateTotals();
@@ -51,39 +53,41 @@ const Cart: React.FC<{}> = ({ }) => {
   }, [searchTerm]);
 
   const addToCart = (product: Product, quantity: number) => {
+    if (quantity <= 0) {
+      alert(`Please enter a valid quantity for ${product.name}.`);
+      return;
+    }
+
     if (quantity > product.remaining_quantity) {
-      alert(`Only ${product.remaining_quantity} units available for ${product.name}`);
+      alert(`Only ${product.remaining_quantity} units available for ${product.name}.`);
       return;
     }
 
     const existingItem = cart.find((item) => item.id === product.id);
+    const newQuantity = existingItem ? existingItem.quantity + quantity : quantity;
+    const totalPrice = newQuantity * product.unit_sell_price;
 
-    if (existingItem) {
-      setCart((prevCart) =>
-        prevCart.map((item) =>
+    setCart((prevCart) =>
+      existingItem
+        ? prevCart.map((item) =>
           item.id === product.id
-            ? {
-              ...item,
-              quantity: item.quantity + quantity,
-              totalPrice: (item.quantity + quantity) * product.unit_sell_price,
-            }
+            ? { ...item, quantity: newQuantity, totalPrice }
             : item
         )
-      );
-    } else {
-      setCart((prevCart) => [
-        ...prevCart,
-        {
-          ...product,
-          quantity,
-          totalPrice: quantity * product.unit_sell_price,
-        },
-      ]);
-    }
+        : [...prevCart, { ...product, quantity, totalPrice }]
+    );
+
+    // alert(`${quantity} ${product.name}(s) added to the cart successfully!`);
   };
 
-  const removeFromCart = (id: string) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+  const removeFromCart = (cartItem: any) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== cartItem.id));
+    productsForTerm.filter((product) => product.id === cartItem.id).forEach((product) => {
+
+      product.remaining_quantity += cartItem.quantity;
+      console.log(product);
+    });
+    
   };
 
   const fetchProducts = async () => {
@@ -256,12 +260,46 @@ const Cart: React.FC<{}> = ({ }) => {
                     {product.remaining_quantity} left
                   </p>
                 </div>
-                <button
-                  className="px-4 py-2 rounded-xl text-sm ml-auto my-2 bg-gray-600 hover:bg-gray-800 text-white"
-                  onClick={() => addToCart(product, 1)}
-                >
-                  Add to Cart
-                </button>
+                <div>
+                  <input
+                    type="number"
+                    min="1"
+                    max={product.remaining_quantity}
+                    value={quantities[product.id] || ''} // Default to empty string if no quantity is set
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value, 10);
+                      if (!isNaN(value) && value > 0 && value <= product.remaining_quantity) {
+                        setQuantities((prev) => ({
+                          ...prev,
+                          [product.id]: value, // Update quantity for this product ID
+                        }));
+                      } else {
+                        setQuantities((prev) => ({
+                          ...prev,
+                          [product.id]: 0, // Set to 0 if the input is invalid
+                        }));
+                      }
+                    }}
+                    className="w-32 me-4 px-2 py-1 border border-gray-300 rounded-lg text-center"
+                    placeholder="Qty"
+                  />
+                  <button
+                    className="px-4 py-2 rounded-xl text-sm ml-auto my-2 bg-gray-600 hover:bg-gray-800 text-white"
+                    onClick={() => {
+                      const quantity = quantities[product.id] || 0; // Default to 0 if no quantity is set
+                      addToCart(product, quantity);
+                      product.remaining_quantity -= quantity;
+                      // Clear the quantity for the product after adding to cart
+                      setQuantities((prev:any) => ({
+                        ...prev,
+                        [product.id]: '', // Reset the quantity field
+                      }));
+                    }}
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+
               </div>
             ))}
           </div>)}
@@ -288,7 +326,7 @@ const Cart: React.FC<{}> = ({ }) => {
                     </div>
                     <button
                       className="text-red-500 hover:text-red-700"
-                      onClick={() => removeFromCart(item.id)}
+                      onClick={() => removeFromCart(item)}
                     >
                       Remove
                     </button>
